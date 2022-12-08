@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "673401807742",
+    "project_id": "booki-d4bc8",
+    "storage_bucket": "booki-d4bc8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673401807742:android:b4cacd0336c242d936492f",
+        "android_client_info": {
+          "package_name": "com.example.booki_administrator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "673401807742-jkndr9dl7l0op6oe1bn3dq341kqbjl32.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_mFeegPxhv2ScnsQyweIO5D3cb3k1TKA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "673401807742-jkndr9dl7l0op6oe1bn3dq341kqbjl32.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "673401807742-v64p9hggpkndo02mt7c18347q1leahem.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bookiappFront"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:673401807742:android:3a8df3b5f881422d36492f",
+        "android_client_info": {
+          "package_name": "com.example.bookiapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "673401807742-jkndr9dl7l0op6oe1bn3dq341kqbjl32.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_mFeegPxhv2ScnsQyweIO5D3cb3k1TKA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "673401807742-jkndr9dl7l0op6oe1bn3dq341kqbjl32.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "673401807742-v64p9hggpkndo02mt7c18347q1leahem.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bookiappFront"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

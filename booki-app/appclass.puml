@@ -1,0 +1,380 @@
+@startuml
+set namespaceSeparator ::
+
+class "bookiapp::firebase_options.dart::DefaultFirebaseOptions" {
+  {static} +FirebaseOptions web
+  {static} +FirebaseOptions android
+  {static} +FirebaseOptions ios
+  {static} +FirebaseOptions currentPlatform
+}
+
+"bookiapp::firebase_options.dart::DefaultFirebaseOptions" o-- "firebase_core_platform_interface::firebase_core_platform_interface.dart::FirebaseOptions"
+
+class "bookiapp::helpers::cache.dart::Cache" {
+  {static} -SharedPreferences _cache
+  {static} -Future<dynamic>? _job
+  {static} +SharedPreferences get
+  {static} +Future<dynamic> job
+  {static} +Future<dynamic> init()
+  {static} -Future<dynamic> _init()
+}
+
+"bookiapp::helpers::cache.dart::Cache" o-- "shared_preferences::shared_preferences.dart::SharedPreferences"
+
+class "bookiapp::main.dart::MyApp" {
+  {static} +TextStyle whiteText
+  +State<MyApp> createState()
+}
+
+"bookiapp::main.dart::MyApp" o-- "flutter::src::painting::text_style.dart::TextStyle"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "bookiapp::main.dart::MyApp"
+
+class "bookiapp::main.dart::_MyAppState" {
+  +bool initialized
+  +void initState()
+  +Widget build()
+  +ThemeData getTheme()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "bookiapp::main.dart::_MyAppState"
+
+class "bookiapp::models::book_properties.dart::BookProperties" {
+  +int id
+  +String title
+  +String author
+  +String language
+  +String publisher
+  +String published
+  +String synopsis
+  +int position
+  +bool favorite
+  +Map<String, dynamic> toJson()
+}
+
+abstract class "bookiapp::services::accessors::book_accessor.dart::BookAccessor" {
+  {static} +ListenableSet<BookAccessor> home
+  {static} +ListenableSet<BookAccessor> favorites
+  {static} +ListenableSet<BookAccessor> reading
+  {static} +ListenableSet<BookAccessor> search
+  -int _id
+  +String title
+  +Future<Image> cover
+  +Future<EpubBook> document
+  +String author
+  +String language
+  +String publisher
+  +String published
+  +String synopsis
+  +bool favorite
+  +int position
+}
+
+"bookiapp::services::accessors::book_accessor.dart::BookAccessor" o-- "listenable_collections::listenable_set.dart::ListenableSet<BookAccessor>"
+
+class "bookiapp::services::accessors::book_accessor.dart::MockBookAccessor" {
+  +BookProperties book
+  +String author
+  +Future<Image> cover
+  +Future<EpubBook> document
+  +bool favorite
+  +int hashCode
+  +String language
+  +int position
+  +String published
+  +String publisher
+  +String synopsis
+  +String title
+  -int _id
+  +bool ==()
+  {static} +Future<dynamic> populateBookSets()
+  {static} +Future<dynamic> search()
+}
+
+"bookiapp::services::accessors::book_accessor.dart::MockBookAccessor" o-- "bookiapp::models::book_properties.dart::BookProperties"
+"bookiapp::services::accessors::book_accessor.dart::BookAccessor" <|-- "bookiapp::services::accessors::book_accessor.dart::MockBookAccessor"
+
+class "bookiapp::services::accessors::book_accessor.dart::ApiBookAccessor" {
+  {static} +User? user
+  {static} -String _baseUrl
+  {static} -Future<dynamic>? _baseUrlInit
+  +BookProperties props
+  +String author
+  +Future<Image> cover
+  +Future<EpubBook> document
+  +bool favorite
+  +int position
+  +String language
+  +String published
+  +String publisher
+  +String synopsis
+  +String title
+  -int _id
+  +int hashCode
+  {static} -Future<Response> _easyGet()
+  {static} +Future<String> whoAmINow()
+  {static} +Future<dynamic> populateBookSets()
+  {static} +Future<dynamic> search()
+  +bool ==()
+}
+
+"bookiapp::services::accessors::book_accessor.dart::ApiBookAccessor" o-- "firebase_auth::firebase_auth.dart::User"
+"bookiapp::services::accessors::book_accessor.dart::ApiBookAccessor" o-- "bookiapp::models::book_properties.dart::BookProperties"
+"bookiapp::services::accessors::book_accessor.dart::BookAccessor" <|-- "bookiapp::services::accessors::book_accessor.dart::ApiBookAccessor"
+
+class "bookiapp::services::auth::auth_exceptions.dart::AuthException" {
+  +AuthProblem problem
+}
+
+"bookiapp::services::auth::auth_exceptions.dart::AuthException" o-- "bookiapp::services::auth::auth_exceptions.dart::AuthProblem"
+"dart::core::Exception" <|-- "bookiapp::services::auth::auth_exceptions.dart::AuthException"
+
+class "bookiapp::services::auth::auth_exceptions.dart::AuthProblem" {
+  +int index
+  {static} +List<AuthProblem> values
+  {static} +AuthProblem userNotFound
+  {static} +AuthProblem wrongPassword
+  {static} +AuthProblem weakPassword
+  {static} +AuthProblem emailInUse
+  {static} +AuthProblem invalidEmail
+  {static} +AuthProblem emailUnverified
+  {static} +AuthProblem userUnauthorized
+  {static} +AuthProblem generic
+}
+
+"bookiapp::services::auth::auth_exceptions.dart::AuthProblem" o-- "bookiapp::services::auth::auth_exceptions.dart::AuthProblem"
+"dart::core::Enum" <|-- "bookiapp::services::auth::auth_exceptions.dart::AuthProblem"
+
+class "bookiapp::services::auth::firebase_auth_manager.dart::FirebaseAuthManager" {
+  {static} +Future<void> initialize()
+  {static} +Future<dynamic> createUser()
+  {static} +Future<dynamic> logIn()
+  {static} -Future<bool> _isAdmin()
+  {static} +Future<void> logOut()
+  {static} +Future<void> sendEmailVerification()
+  {static} +Future<void> sendPasswordReset()
+}
+
+class "bookiapp::utilities::loading::loading_screen.dart::LoadingScreen" {
+  {static} -LoadingScreen _shared
+  +LoadingScreenController? controller
+  +void show()
+  +void hide()
+  +LoadingScreenController showOverlay()
+}
+
+"bookiapp::utilities::loading::loading_screen.dart::LoadingScreen" o-- "bookiapp::utilities::loading::loading_screen.dart::LoadingScreen"
+"bookiapp::utilities::loading::loading_screen.dart::LoadingScreen" o-- "bookiapp::utilities::loading::loading_screen_controller.dart::LoadingScreenController"
+
+class "bookiapp::utilities::loading::loading_screen_controller.dart::LoadingScreenController" {
+  +bool Function() close
+  +bool Function(String) update
+}
+
+"bookiapp::utilities::loading::loading_screen_controller.dart::LoadingScreenController" o-- "bookiapp::utilities::loading::loading_screen_controller.dart::bool Function()"
+"bookiapp::utilities::loading::loading_screen_controller.dart::LoadingScreenController" o-- "bookiapp::utilities::loading::loading_screen_controller.dart::bool Function(String)"
+
+class "bookiapp::views::auth::forgot_password_view.dart::ForgotPasswordView" {
+  +State<ForgotPasswordView> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "bookiapp::views::auth::forgot_password_view.dart::ForgotPasswordView"
+
+class "bookiapp::views::auth::forgot_password_view.dart::_ForgotPasswordViewState" {
+  -TextEditingController _email
+  +void initState()
+  +void dispose()
+  +dynamic submit()
+  +Widget build()
+}
+
+"bookiapp::views::auth::forgot_password_view.dart::_ForgotPasswordViewState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "bookiapp::views::auth::forgot_password_view.dart::_ForgotPasswordViewState"
+
+class "bookiapp::views::auth::login_view.dart::LoginView" {
+  +State<LoginView> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "bookiapp::views::auth::login_view.dart::LoginView"
+
+class "bookiapp::views::auth::login_view.dart::_LoginViewState" {
+  -TextEditingController _email
+  -TextEditingController _password
+  +void initState()
+  +void dispose()
+  +void submit()
+  +Widget build()
+}
+
+"bookiapp::views::auth::login_view.dart::_LoginViewState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "bookiapp::views::auth::login_view.dart::_LoginViewState"
+
+class "bookiapp::views::auth::register_view.dart::RegisterView" {
+  +State<RegisterView> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "bookiapp::views::auth::register_view.dart::RegisterView"
+
+class "bookiapp::views::auth::register_view.dart::_RegisterViewState" {
+  -TextEditingController _email
+  -TextEditingController _password
+  +void initState()
+  +void dispose()
+  +dynamic submit()
+  +Widget build()
+}
+
+"bookiapp::views::auth::register_view.dart::_RegisterViewState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "bookiapp::views::auth::register_view.dart::_RegisterViewState"
+
+class "bookiapp::views::auth::verify_email_view.dart::VerifyEmailView" {
+  +State<VerifyEmailView> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "bookiapp::views::auth::verify_email_view.dart::VerifyEmailView"
+
+class "bookiapp::views::auth::verify_email_view.dart::_VerifyEmailViewState" {
+  +Widget build()
+}
+
+"flutter::src::widgets::framework.dart::State" <|-- "bookiapp::views::auth::verify_email_view.dart::_VerifyEmailViewState"
+
+class "bookiapp::views::booki::booki_root.dart::BookiRoot" {
+  +State<BookiRoot> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "bookiapp::views::booki::booki_root.dart::BookiRoot"
+
+class "bookiapp::views::booki::booki_root.dart::_BookiRootState" {
+  +int activeTab
+  +bool cacheInitialized
+  +bool booksInitialized
+  +User? user
+  +_AppState curState
+  +void initState()
+  +Widget build()
+  -PopupMenuButton<_MenuOptions> _getMenu()
+  -Widget _getBody()
+  -Widget _getNavBar()
+}
+
+"bookiapp::views::booki::booki_root.dart::_BookiRootState" o-- "firebase_auth::firebase_auth.dart::User"
+"bookiapp::views::booki::booki_root.dart::_BookiRootState" o-- "bookiapp::views::booki::booki_root.dart::_AppState"
+"flutter::src::widgets::framework.dart::State" <|-- "bookiapp::views::booki::booki_root.dart::_BookiRootState"
+
+class "bookiapp::views::booki::booki_root.dart::_MenuOptions" {
+  +int index
+  {static} +List<_MenuOptions> values
+  {static} +_MenuOptions logout
+}
+
+"bookiapp::views::booki::booki_root.dart::_MenuOptions" o-- "bookiapp::views::booki::booki_root.dart::_MenuOptions"
+"dart::core::Enum" <|-- "bookiapp::views::booki::booki_root.dart::_MenuOptions"
+
+class "bookiapp::views::booki::booki_root.dart::_AppState" {
+  +int index
+  {static} +List<_AppState> values
+  {static} +_AppState loading
+  {static} +_AppState ready
+  {static} +_AppState error
+}
+
+"bookiapp::views::booki::booki_root.dart::_AppState" o-- "bookiapp::views::booki::booki_root.dart::_AppState"
+"dart::core::Enum" <|-- "bookiapp::views::booki::booki_root.dart::_AppState"
+
+class "bookiapp::views::booki::books_showroom.dart::BooksShowroom" {
+  +Categories category
+  +State<BooksShowroom> createState()
+}
+
+"bookiapp::views::booki::books_showroom.dart::BooksShowroom" o-- "bookiapp::views::booki::books_showroom.dart::Categories"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "bookiapp::views::booki::books_showroom.dart::BooksShowroom"
+
+class "bookiapp::views::booki::books_showroom.dart::_BooksShowroomState" {
+  +ListenableSet<BookAccessor> bookSet
+  +ScrollController scrollController
+  -dynamic _update()
+  +void initState()
+  +void dispose()
+  +Widget build()
+  +ListenableSet<BookAccessor> getBooks()
+}
+
+"bookiapp::views::booki::books_showroom.dart::_BooksShowroomState" o-- "listenable_collections::listenable_set.dart::ListenableSet<BookAccessor>"
+"bookiapp::views::booki::books_showroom.dart::_BooksShowroomState" o-- "flutter::src::widgets::scroll_controller.dart::ScrollController"
+"flutter::src::widgets::framework.dart::State" <|-- "bookiapp::views::booki::books_showroom.dart::_BooksShowroomState"
+
+class "bookiapp::views::booki::books_showroom.dart::Categories" {
+  +int index
+  {static} +List<Categories> values
+  {static} +Categories home
+  {static} +Categories fav
+  {static} +Categories reading
+  {static} +Categories search
+}
+
+"bookiapp::views::booki::books_showroom.dart::Categories" o-- "bookiapp::views::booki::books_showroom.dart::Categories"
+"dart::core::Enum" <|-- "bookiapp::views::booki::books_showroom.dart::Categories"
+
+class "bookiapp::views::booki::book_showcase.dart::BookShowcase" {
+  +BookAccessor book
+  +State<BookShowcase> createState()
+}
+
+"bookiapp::views::booki::book_showcase.dart::BookShowcase" o-- "bookiapp::services::accessors::book_accessor.dart::BookAccessor"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "bookiapp::views::booki::book_showcase.dart::BookShowcase"
+
+class "bookiapp::views::booki::book_showcase.dart::_BookShowcaseState" {
+  +Image? cover
+  +void initState()
+  -StatefulBuilder _builder()
+  +Future<dynamic> read()
+  +Widget build()
+}
+
+"bookiapp::views::booki::book_showcase.dart::_BookShowcaseState" o-- "flutter::src::widgets::image.dart::Image"
+"flutter::src::widgets::framework.dart::State" <|-- "bookiapp::views::booki::book_showcase.dart::_BookShowcaseState"
+
+class "bookiapp::views::booki::epub_reader.dart::EpubReader" {
+  +BookAccessor book
+  +State<EpubReader> createState()
+}
+
+"bookiapp::views::booki::epub_reader.dart::EpubReader" o-- "bookiapp::services::accessors::book_accessor.dart::BookAccessor"
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "bookiapp::views::booki::epub_reader.dart::EpubReader"
+
+class "bookiapp::views::booki::epub_reader.dart::_EpubReaderState" {
+  +bool isControllerReady
+  +bool saving
+  -EpubController _epubController
+  +int index
+  +TextStyle style
+  +void initState()
+  -void _beginSaving()
+  +void dispose()
+  +Widget build()
+  +void showSettings()
+}
+
+"bookiapp::views::booki::epub_reader.dart::_EpubReaderState" o-- "epub_view::src::ui::epub_view.dart::EpubController"
+"bookiapp::views::booki::epub_reader.dart::_EpubReaderState" o-- "flutter::src::painting::text_style.dart::TextStyle"
+"flutter::src::widgets::framework.dart::State" <|-- "bookiapp::views::booki::epub_reader.dart::_EpubReaderState"
+
+class "bookiapp::views::booki::search_page.dart::SearchPage" {
+  +State<SearchPage> createState()
+}
+
+"flutter::src::widgets::framework.dart::StatefulWidget" <|-- "bookiapp::views::booki::search_page.dart::SearchPage"
+
+class "bookiapp::views::booki::search_page.dart::_SearchPageState" {
+  -TextEditingController _search
+  +bool error
+  +void initState()
+  +Widget build()
+  -Container _getSearchBox()
+}
+
+"bookiapp::views::booki::search_page.dart::_SearchPageState" o-- "flutter::src::widgets::editable_text.dart::TextEditingController"
+"flutter::src::widgets::framework.dart::State" <|-- "bookiapp::views::booki::search_page.dart::_SearchPageState"
+
+
+@enduml

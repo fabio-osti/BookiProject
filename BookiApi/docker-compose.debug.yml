@@ -1,0 +1,50 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
+
+version: '3.4'
+
+services:
+  api:
+    container_name: booki-api
+    image: bookiapi
+    depends_on:
+      - sql
+    build:
+      context: .
+      args:
+        PORT: '${INTERNAL_PORT:-8080}'
+      dockerfile: ./Dockerfile
+    volumes:
+      - ~/.vsdbg:/remote_debugger:rw
+    environment:
+      ASPNETCORE_ENVIRONMENT:
+        Development
+      ASPNETCORE_ConnectionStrings__AppDb: >
+        Host=sql;
+        Database=${PG_DB:-bookiDbs};
+        Username=${PG_USER:-bookiUsr};
+        Password=${PG_PSWR:-bookiPsw}
+    ports:
+      - ${EXTERNAL_PORT:-80}:${INTERNAL_PORT:-8080}
+    networks:
+      - booki-network
+  
+  sql:
+    container_name: booki-sql
+    image: postgres
+    environment:      
+      POSTGRES_DB: '${PG_DB:-bookiDbs}'
+      POSTGRES_USER: '${PG_USER:-bookiUsr}'
+      POSTGRES_PASSWORD: '${PG_PSWR:-bookiPsw}'
+    volumes:
+      - 'booki-postgresql-volume:/var/lib/postgresql/data'
+    ports:
+      - 5000:5432
+    networks:
+      - booki-network
+
+volumes:
+  booki-postgresql-volume:
+
+networks:
+  booki-network:
+    driver: bridge
